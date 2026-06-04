@@ -1,0 +1,7 @@
+@hostname = localhost
+@port = 7251
+@host = https://{{hostname}}:{{port}}
+
+### 1. Отримати список активних ініціатив
+GET {{host}}/api/initiatives/active
+Accept: application/json

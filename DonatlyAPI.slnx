@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Donalty.Core/Donalty.Core.csproj" />
+  <Project Path="Donatly.Application/Donatly.Application.csproj" Id="cc070375-b103-4fdf-a13d-e2f5fc5af805" />
+  <Project Path="Donatly.Infrastructure/Donatly.Infrastructure.csproj" Id="2c14f167-6c6c-413a-a628-a41e027fa31f" />
+  <Project Path="DonatlyAPI/DonatlyAPI.csproj" />
+</Solution>
