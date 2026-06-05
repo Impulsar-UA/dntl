@@ -1,16 +1,17 @@
-import { useState, type FormEvent } from 'react';
+import { useCallback, useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { ApiError } from '@/api/client';
 import { Alert } from '@/components/ui/Alert';
-import { HeartIcon, ShieldIcon, InitiativeIcon } from '@/components/ui/Icons';
+import { HeartIcon, HandHeartIcon, InitiativeIcon } from '@/components/ui/Icons';
+import { GoogleSignInButton, googleSignInEnabled } from '@/components/auth/GoogleSignInButton';
 import type { RegistrableRole } from '@/types';
 
 export default function RegisterPage() {
-  const { registerOrgRep, registerAdmin } = useAuth();
+  const { registerDonor, registerOrgRep, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
-  const [role, setRole] = useState<RegistrableRole>('OrganizationRep');
+  const [role, setRole] = useState<RegistrableRole>('Donor');
   const [form, setForm] = useState({
     displayName: '',
     email: '',
@@ -41,8 +42,8 @@ export default function RegisterPage() {
 
     setLoading(true);
     try {
-      if (role === 'Admin') {
-        await registerAdmin({
+      if (role === 'Donor') {
+        await registerDonor({
           displayName: form.displayName,
           email: form.email,
           password: form.password,
@@ -58,15 +59,26 @@ export default function RegisterPage() {
       }
       navigate('/', { replace: true });
     } catch (err) {
-      setError(
-        err instanceof ApiError ? err.message : 'Невідома помилка під час реєстрації.'
-      );
+      setError(err instanceof ApiError ? err.message : 'Невідома помилка під час реєстрації.');
     } finally {
       setLoading(false);
     }
   }
 
-  const isAdmin = role === 'Admin';
+  const handleGoogle = useCallback(
+    async (idToken: string) => {
+      setError(null);
+      try {
+        await loginWithGoogle(idToken);
+        navigate('/', { replace: true });
+      } catch (err) {
+        setError(err instanceof ApiError ? err.message : 'Помилка реєстрації через Google.');
+      }
+    },
+    [loginWithGoogle, navigate]
+  );
+
+  const isOrg = role === 'OrganizationRep';
 
   return (
     <div className="flex min-h-full items-center justify-center bg-gradient-to-br from-brand-600 to-brand-800 px-4 py-12">
@@ -81,46 +93,32 @@ export default function RegisterPage() {
 
         <div className="card p-8">
           <h2 className="mb-1 text-xl font-bold text-slate-900">Створення акаунту</h2>
-          <p className="mb-5 text-sm text-slate-500">Оберіть роль та заповніть дані</p>
+          <p className="mb-5 text-sm text-slate-500">Оберіть тип акаунту та заповніть дані</p>
 
-          {/* Role selector */}
+          {/* Role selector: Donor or Organization Representative (admins are pre-created) */}
           <div className="mb-6 grid grid-cols-2 gap-3">
             <button
               type="button"
-              onClick={() => setRole('OrganizationRep')}
+              onClick={() => setRole('Donor')}
               className={`flex flex-col items-start gap-1 rounded-xl border-2 p-4 text-left transition ${
-                !isAdmin
-                  ? 'border-brand-500 bg-brand-50'
-                  : 'border-slate-200 bg-white hover:border-slate-300'
+                !isOrg ? 'border-brand-500 bg-brand-50' : 'border-slate-200 bg-white hover:border-slate-300'
               }`}
             >
-              <InitiativeIcon
-                className={`h-6 w-6 ${!isAdmin ? 'text-brand-600' : 'text-slate-400'}`}
-              />
-              <span className="text-sm font-semibold text-slate-900">
-                Представник організації
-              </span>
-              <span className="text-xs text-slate-500">
-                Створення та ведення благодійних зборів
-              </span>
+              <HandHeartIcon className={`h-6 w-6 ${!isOrg ? 'text-brand-600' : 'text-slate-400'}`} />
+              <span className="text-sm font-semibold text-slate-900">Благодійник</span>
+              <span className="text-xs text-slate-500">Робити донати та підтримувати петиції</span>
             </button>
 
             <button
               type="button"
-              onClick={() => setRole('Admin')}
+              onClick={() => setRole('OrganizationRep')}
               className={`flex flex-col items-start gap-1 rounded-xl border-2 p-4 text-left transition ${
-                isAdmin
-                  ? 'border-brand-500 bg-brand-50'
-                  : 'border-slate-200 bg-white hover:border-slate-300'
+                isOrg ? 'border-brand-500 bg-brand-50' : 'border-slate-200 bg-white hover:border-slate-300'
               }`}
             >
-              <ShieldIcon
-                className={`h-6 w-6 ${isAdmin ? 'text-brand-600' : 'text-slate-400'}`}
-              />
-              <span className="text-sm font-semibold text-slate-900">Адміністратор</span>
-              <span className="text-xs text-slate-500">
-                Модерація, аналітика та керування
-              </span>
+              <InitiativeIcon className={`h-6 w-6 ${isOrg ? 'text-brand-600' : 'text-slate-400'}`} />
+              <span className="text-sm font-semibold text-slate-900">Представник організації</span>
+              <span className="text-xs text-slate-500">Створення та ведення зборів</span>
             </button>
           </div>
 
@@ -133,12 +131,12 @@ export default function RegisterPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="label" htmlFor="displayName">
-                {isAdmin ? 'Ім’я адміністратора' : 'Назва організації'}
+                {isOrg ? 'Назва організації' : "Ваше ім'я"}
               </label>
               <input
                 id="displayName"
                 className="input"
-                placeholder={isAdmin ? 'Олександр Адмін' : 'Благодійний фонд «Імпульс»'}
+                placeholder={isOrg ? 'Благодійний фонд «Імпульс»' : 'Іван Петренко'}
                 value={form.displayName}
                 onChange={(e) => update('displayName', e.target.value)}
                 required
@@ -154,15 +152,14 @@ export default function RegisterPage() {
                 type="email"
                 autoComplete="username"
                 className="input"
-                placeholder={isAdmin ? 'admin@donatly.com' : 'org@organization.com'}
+                placeholder={isOrg ? 'org@organization.com' : 'you@example.com'}
                 value={form.email}
                 onChange={(e) => update('email', e.target.value)}
                 required
               />
             </div>
 
-            {/* Organization-only fields */}
-            {!isAdmin && (
+            {isOrg && (
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label className="label" htmlFor="orgRegistryCode">
@@ -174,7 +171,7 @@ export default function RegisterPage() {
                     placeholder="12345678"
                     value={form.orgRegistryCode}
                     onChange={(e) => update('orgRegistryCode', e.target.value)}
-                    required={!isAdmin}
+                    required={isOrg}
                   />
                 </div>
                 <div>
@@ -188,7 +185,7 @@ export default function RegisterPage() {
                     placeholder="+380501112233"
                     value={form.contactPhone}
                     onChange={(e) => update('contactPhone', e.target.value)}
-                    required={!isAdmin}
+                    required={isOrg}
                   />
                 </div>
               </div>
@@ -230,11 +227,22 @@ export default function RegisterPage() {
             <button type="submit" className="btn-primary w-full" disabled={loading}>
               {loading
                 ? 'Реєстрація…'
-                : isAdmin
-                  ? 'Зареєструватися як адміністратор'
-                  : 'Зареєструватися як організація'}
+                : isOrg
+                  ? 'Зареєструватися як організація'
+                  : 'Зареєструватися як благодійник'}
             </button>
           </form>
+
+          {googleSignInEnabled && (
+            <>
+              <div className="my-5 flex items-center gap-3">
+                <span className="h-px flex-1 bg-slate-200" />
+                <span className="text-xs text-slate-400">або реєстрація для благодійника</span>
+                <span className="h-px flex-1 bg-slate-200" />
+              </div>
+              <GoogleSignInButton onCredential={handleGoogle} />
+            </>
+          )}
 
           <p className="mt-6 text-center text-sm text-slate-500">
             Вже маєте акаунт?{' '}

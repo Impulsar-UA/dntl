@@ -33,5 +33,7 @@ namespace Donalty.Core.Domain.Entities
 
         public void Deactivate() => IsActive = false;
 
+        public void Activate() => IsActive = true;
+
     }
 }

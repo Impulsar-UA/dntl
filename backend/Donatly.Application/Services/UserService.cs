@@ -59,25 +59,6 @@ public class UserService : IUserService
         return rep.ToDto();
     }
 
-    public async Task<UserDto> RegisterAdminAsync(RegisterAdminDto dto)
-    {
-        var normalizedEmail = dto.Email.ToLowerInvariant();
-
-        var emailExists = await _context.Users.AnyAsync(u => u.Email == normalizedEmail);
-        if (emailExists)
-        {
-            throw new InvalidOperationException("A user with this email already exists");
-        }
-
-        var passwordHash = PasswordHasher.HashPassword(dto.Password);
-        var admin = new Admin(normalizedEmail, passwordHash, dto.DisplayName);
-
-        _context.Admins.Add(admin);
-        await _context.SaveChangesAsync();
-
-        return admin.ToDto();
-    }
-
     public async Task<UserDto?> LoginAsync(LoginDto dto)
     {
         var normalizedEmail = dto.Email.ToLowerInvariant();
@@ -88,6 +69,56 @@ public class UserService : IUserService
             return null;
         }
 
+        // Deactivated accounts cannot sign in.
+        if (!user.IsActive)
+        {
+            return null;
+        }
+
+        return user.ToDto();
+    }
+
+    public async Task<UserDto> FindOrCreateGoogleDonorAsync(GoogleLoginDto dto)
+    {
+        var normalizedEmail = dto.Email.ToLowerInvariant();
+        var existing = await _context.Users.FirstOrDefaultAsync(u => u.Email == normalizedEmail);
+
+        if (existing != null)
+        {
+            if (!existing.IsActive)
+            {
+                throw new InvalidOperationException("This account is deactivated.");
+            }
+            return existing.ToDto();
+        }
+
+        // New Google users join as donors. A random password hash is stored
+        // because they authenticate via Google, not a local password.
+        var randomSecret = PasswordHasher.HashPassword(Guid.NewGuid().ToString("N"));
+        var displayName = string.IsNullOrWhiteSpace(dto.DisplayName) ? normalizedEmail : dto.DisplayName;
+        var donor = new Donor(normalizedEmail, randomSecret, displayName);
+
+        _context.Donors.Add(donor);
+        await _context.SaveChangesAsync();
+
+        return donor.ToDto();
+    }
+
+    public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
+    {
+        var users = await _context.Users.ToListAsync();
+        return users.Select(u => u.ToDto());
+    }
+
+    public async Task<UserDto?> SetUserActiveAsync(Guid id, bool isActive)
+    {
+        var user = await _context.Users.FindAsync(id);
+        if (user == null) return null;
+
+        if (isActive) user.Activate();
+        else user.Deactivate();
+
+        await _context.SaveChangesAsync();
         return user.ToDto();
     }
 }

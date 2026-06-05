@@ -2,6 +2,7 @@
 using Donatly.Application.DTOs;
 using Donatly.Application.Interfaces;
 using Donatly.Application.Mappers;
+using Microsoft.EntityFrameworkCore;
 
 namespace Donatly.Application.Services;
 
@@ -43,5 +44,15 @@ public class DonationService : IDonationService
         await _context.SaveChangesAsync();
 
         return donation.ToDto();
+    }
+
+    public async Task<IEnumerable<DonationDto>> GetDonationsByDonorAsync(Guid donorId)
+    {
+        var donations = await _context.Donations
+            .Where(d => d.DonorId == donorId)
+            .OrderByDescending(d => d.Timestamp)
+            .ToListAsync();
+
+        return donations.Select(d => d.ToDto());
     }
 }

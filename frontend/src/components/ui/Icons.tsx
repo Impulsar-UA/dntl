@@ -96,3 +96,57 @@ export const EyeIcon = (p: IconProps) => (
     <circle cx="12" cy="12" r="3" />
   </svg>
 );
+
+export const HandHeartIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M11 14h2a2 2 0 0 0 2-2 2 2 0 0 0-2-2H9.5a3 3 0 0 0-2.12.88L3 15" />
+    <path d="m7 18 1.62-1.12A3 3 0 0 1 10.74 16H14a2 2 0 0 0 1.9-1.37l2.4-5.5A2 2 0 0 0 16.4 6.6L13 8" />
+    <path d="M2 14h2v8H2z" />
+    <path d="M17.5 3.5a2 2 0 0 0-3 0L14 4l-.5-.5a2 2 0 1 0-2.8 2.8L14 9.5l3.3-3.2a2 2 0 0 0 .2-2.8Z" />
+  </svg>
+);
+
+export const SearchIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <circle cx="11" cy="11" r="7" />
+    <path d="m21 21-4.3-4.3" />
+  </svg>
+);
+
+export const HistoryIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M3 3v5h5" />
+    <path d="M3.05 13A9 9 0 1 0 6 5.3L3 8" />
+    <path d="M12 7v5l4 2" />
+  </svg>
+);
+
+export const SparklesIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5l4.6-1.9L12 3Z" />
+    <path d="M19 14l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8.8-2Z" />
+  </svg>
+);
+
+export const UsersIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+  </svg>
+);
+
+export const CreditCardIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <rect x="2" y="5" width="20" height="14" rx="2" />
+    <path d="M2 10h20" />
+  </svg>
+);
+
+export const ThumbsUpIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M7 10v12" />
+    <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H7a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L14 2a3.13 3.13 0 0 1 1 3.88Z" />
+  </svg>
+);

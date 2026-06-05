@@ -10,12 +10,20 @@ export interface User {
   email: string;
   displayName: string;
   userType: UserType;
+  isActive: boolean;
 }
 
 /** Mirrors LoginDto. */
 export interface LoginRequest {
   email: string;
   password: string;
+}
+
+/** Mirrors RegisterDonorDto. */
+export interface RegisterDonorRequest {
+  email: string;
+  password: string;
+  displayName: string;
 }
 
 /** Mirrors RegisterOrgRepDto. */
@@ -27,15 +35,8 @@ export interface RegisterOrgRepRequest {
   contactPhone: string;
 }
 
-/** Mirrors RegisterAdminDto. */
-export interface RegisterAdminRequest {
-  email: string;
-  password: string;
-  displayName: string;
-}
-
-/** Roles selectable during web registration (donors register in the mobile app). */
-export type RegistrableRole = 'Admin' | 'OrganizationRep';
+/** Roles a user can self-register as on the web (admins are pre-created). */
+export type RegistrableRole = 'Donor' | 'OrganizationRep';
 
 /** Initiative lifecycle status (Donalty.Core.Domain.Enums.InitiativeStatus). */
 export type InitiativeStatus = 'Pending' | 'Active' | 'Completed' | 'Rejected';
@@ -102,4 +103,40 @@ export interface UpdatePetitionRequest {
   targetVotes: number;
   deadline: string;
   status: PetitionStatus;
+}
+
+/** Mirrors CreateDonationDto. */
+export interface CreateDonationRequest {
+  donorId: string;
+  initiativeId: string;
+  amount: number;
+  currency: string;
+}
+
+/** Mirrors DonationDto. */
+export interface Donation {
+  id: string;
+  donorId: string;
+  initiativeId: string;
+  amount: number;
+  currency: string;
+  timestamp: string;
+  isProcessed: boolean;
+}
+
+/** AI assistant request/response (Donatly.Application.DTOs.AiDtos). */
+export interface AiRecommendRequest {
+  prompt: string;
+}
+
+export interface AiSuggestion {
+  initiativeId: string;
+  title: string;
+  progressPercentage: number;
+}
+
+export interface AiRecommendResponse {
+  message: string;
+  suggestions: AiSuggestion[];
+  usedLlm: boolean;
 }

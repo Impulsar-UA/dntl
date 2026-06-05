@@ -17,4 +17,7 @@ export const petitionsApi = {
     api.put<Petition>(`/petitions/${id}`, payload),
 
   remove: (id: string) => api.delete<void>(`/petitions/${id}`),
+
+  vote: (id: string, donorId: string) =>
+    api.post<{ message: string }>(`/petitions/${id}/vote`, { donorId }),
 };

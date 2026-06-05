@@ -15,6 +15,6 @@ public static class UserMapper
             _ => "User"
         };
 
-        return new UserDto(user.Id, user.Email, user.DisplayName, type);
+        return new UserDto(user.Id, user.Email, user.DisplayName, type, user.IsActive);
     }
 }

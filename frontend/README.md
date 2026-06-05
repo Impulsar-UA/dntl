@@ -1,10 +1,9 @@
-# Donatly — Вебпанель управління (Frontend)
+# Donatly — Вебзастосунок (Frontend)
 
-Вебзастосунок платформи **Donatly** для **адміністраторів** та **представників
-організацій**. Дозволяє керувати благодійними зборами (ініціативами) та петиціями.
-
-> ℹ️ Функціонал для **донорів** (донати, голосування за петиції) реалізується в
-> **мобільному застосунку** і навмисно **відсутній** у цій вебпанелі.
+Єдиний **вебзастосунок** платформи **Donatly** (мобільну частину виведено з
+проєкту). Підтримує **три ролі** з окремими обліковими записами, логінами та
+наборами функцій: **Благодійник (Donor)**, **Представник організації
+(OrganizationRep)** та **Адміністратор (Admin)**.
 
 ## Технологічний стек
 
@@ -12,95 +11,115 @@
 - **Vite** — збірка та dev-сервер
 - **Tailwind CSS** — стилізація
 - **React Router** — маршрутизація
+- **Google Identity Services** — вхід через Google (опційно)
 - Взаємодія з **ASP.NET API** (`backend/`) через типізований fetch-клієнт
 
-## Розмежування ролей
+## Ролі та функції
 
-Вебпанель має **дві окремі ролі** з різними обліковими записами, логінами та
-наборами функцій (відповідно до Vision & Scope §2.2, MF-1 – MF-18). Роль
-обирається під час **реєстрації** (адміністратор або представник організації).
-Після входу кожна роль бачить **власний інтерфейс** (своя навігація, свої
-сторінки, окремі маршрути).
+Роль обирається під час **реєстрації** (Благодійник або Представник організації).
+**Адміністратор не реєструється** — його акаунт створено заздалегідь у БД.
+Після входу кожна роль бачить власну навігацію та маршрути.
 
-### Представник організації (Organization Representative) — MF-10 … MF-18
+### Благодійник (Donor)
 
 | Розділ | Опис |
 | --- | --- |
-| **Огляд** | Статистика **власних** зборів: кількість, активні, на розгляді, завершені, зібрана сума |
-| **Мої збори** | Список лише власних зборів, **створення**, редагування, видалення (MF-10) |
-| **Деталі збору** | Прогрес збору в реальному часі (MF-11), **продовження терміну** (MF-13), **поширення в соцмережі** Facebook / X / Threads (MF-15) |
+| **Огляд** | Зведення: задоновано загалом, кількість донатів, рекомендовані збори |
+| **Збори** | Каталог активних зборів, пошук і сортування, **донат** через платіжну форму (банківська заглушка / sandbox) |
+| **AI-помічник** | Чат із рекомендаціями, куди задонатити (Google Gemini + евристичний фолбек) |
+| **Петиції** | Перегляд, **голосування** (один голос на петицію), **створення** петицій |
+| **Історія донатів** | Усі власні внески зі статусом обробки |
 
-> Новий збір створюється зі статусом «На розгляді» і публікується лише після
-> перевірки адміністратором (BR-9). Представник **не** може сам змінювати статус
-> чи маркувати держпідтримку.
-
-### Адміністратор (Administrator) — MF-1 … MF-9
+### Представник організації (OrganizationRep)
 
 | Розділ | Опис |
 | --- | --- |
-| **Огляд** | Системна аналітика (MF-4): усі збори, розподіл за статусами, загальний прогрес, кількість петицій |
-| **Модерація зборів** | Усі збори платформи: **підтвердження** `Pending → Active` (MF-2, BR-9), відхилення, завершення (MF-5), **маркування держпідтримки** (MF-6), видалення |
-| **Модерація петицій** | Усі петиції: зміна статусу, **видалення неприйнятного вмісту** (MF-8) |
+| **Огляд** | Статистика **власних** зборів |
+| **Мої збори** | Створення, редагування, видалення власних зборів, продовження терміну, поширення в соцмережі |
 
-> Адміністратор **не створює** збори — створення зборів є функцією представника
-> організації.
+> Новий збір створюється зі статусом «На розгляді» і публікується після перевірки
+> адміністратором (BR-9).
 
-### Спільне
+### Адміністратор (Admin)
 
 | Розділ | Опис |
 | --- | --- |
-| **Автентифікація** | Вхід для обох ролей; реєстрація з **вибором ролі** (адмін / представник організації) |
-
-> ℹ️ Функціонал для **донорів** (донати, голосування за петиції, реєстрація
-> донора) реалізується в **мобільному застосунку** і навмисно **відсутній** у
-> цій вебпанелі. Донорам вхід у вебпанель заблоковано.
+| **Огляд** | Системна аналітика: усі збори, розподіл за статусами, загальний прогрес |
+| **Модерація зборів** | Підтвердження `Pending → Active`, відхилення, завершення, маркування держпідтримки, видалення |
+| **Модерація петицій** | Зміна статусу, видалення неприйнятного вмісту |
+| **Користувачі** | Перелік усіх акаунтів, **блокування / розблокування** доступу |
 
 ## Швидкий старт
 
 ```bash
+# backend
+cd backend/DonatlyAPI
+dotnet run            # створює БД і сід (адмін, представник, донор)
+
+# frontend (в іншому терміналі)
 cd frontend
 npm install
-npm run dev
+npm run dev           # http://localhost:5173
 ```
 
-Застосунок відкриється на http://localhost:5173.
+CORS на бекенді дозволяє будь-яке джерело для розробки. Базовий URL API — у
+`.env` (`VITE_API_BASE_URL`, типово `http://localhost:5029/api`).
 
-### Передумова: запущений backend
-
-Фронтенд очікує API за адресою `http://localhost:5029/api`. Запустіть backend:
-
-```bash
-cd backend/DonatlyAPI
-dotnet run
-```
-
-(За замовчуванням профіль `http` слухає `http://localhost:5029` — див.
-`backend/DonatlyAPI/Properties/launchSettings.json`. CORS у backend дозволяє
-будь-яке джерело для розробки.)
-
-### Тестові облікові записи (зі `DbSeeder`)
+### Облікові записи (зі `DbSeeder`)
 
 | Роль | Email | Пароль |
 | --- | --- | --- |
+| **Адміністратор** (заздалегідь створений) | `admin@donatly.com` | `Admin123!` |
 | Представник організації | `org@donatly.com` | `password` |
+| Благодійник | `donor@donatly.com` | `password` |
 
-> Донорський акаунт `donor@donatly.com` існує, але вхід через вебпанель для
-> донорів **заблоковано** (донори користуються мобільним застосунком).
->
-> Окремого адміністратора в сидері немає — створіть його через сторінку
-> **реєстрації**, обравши роль «Адміністратор».
+Нових благодійників і представників організацій можна створювати через сторінку
+**реєстрації**.
 
-## Конфігурація
+## Безкоштовні інтеграції (опційні)
 
-Базовий URL API задається змінною середовища `VITE_API_BASE_URL`.
+Обидві працюють **безкоштовно** і вмикаються лише після додавання ключів.
+Без ключів застосунок повністю функціональний:
+- **AI-помічник** автоматично переходить на евристичні рекомендації;
+- **кнопка Google** просто не показується (лишається вхід за email/паролем).
+
+### 1. Google-вхід (Google Identity Services — безкоштовно)
+
+1. У [Google Cloud Console → Credentials](https://console.cloud.google.com/apis/credentials)
+   створіть **OAuth client ID → Web application**.
+2. До **Authorized JavaScript origins** додайте `http://localhost:5173`.
+3. Скопіюйте **Client ID** у два місця:
+   - `frontend/.env` → `VITE_GOOGLE_CLIENT_ID=...`
+   - `backend/DonatlyAPI/appsettings.Development.json` → `Google:ClientId` (для перевірки токена).
+
+### 2. AI-помічник (Google Gemini — безкоштовний tier)
+
+1. Отримайте безкоштовний ключ у [Google AI Studio](https://aistudio.google.com/app/apikey).
+2. Впишіть його на бекенді:
+   `backend/DonatlyAPI/appsettings.Development.json` → `AI:Gemini:ApiKey`
+   (модель типово `gemini-1.5-flash`).
+
+Приклад `backend/DonatlyAPI/appsettings.Development.json`:
+
+```json
+{
+  "Google": { "ClientId": "ВАШ_GOOGLE_CLIENT_ID.apps.googleusercontent.com" },
+  "AI": { "Gemini": { "ApiKey": "ВАШ_GEMINI_KEY", "Model": "gemini-1.5-flash" } }
+}
+```
+
+> Не комітьте реальні ключі. `appsettings.Development.json` призначений для
+> локальних значень.
+
+## Конфігурація фронтенду
 
 ```bash
 cp .env.example .env
-# за потреби змініть значення в .env
 ```
 
 ```
 VITE_API_BASE_URL=http://localhost:5029/api
+VITE_GOOGLE_CLIENT_ID=            # порожньо = кнопка Google прихована
 ```
 
 ## Скрипти
@@ -115,48 +134,47 @@ VITE_API_BASE_URL=http://localhost:5029/api
 ## Структура проєкту
 
 ```
-frontend/
-├── public/                  # Статичні файли (favicon)
-├── src/
-│   ├── api/                 # Типізований API-клієнт (client, auth, initiatives, petitions)
-│   ├── components/
-│   │   ├── initiatives/     # InitiativeFormModal, ShareMenu (соцмережі)
-│   │   ├── layout/          # AppLayout, Sidebar (навігація per-role), Header
-│   │   ├── ui/              # Кнопки, Modal, Alert, ProgressBar, StatCard, Icons тощо
-│   │   └── ProtectedRoute.tsx
-│   ├── contexts/            # AuthContext (сесія + ролі isAdmin/isOrgRep)
-│   ├── lib/                 # format.ts (валюта, дати, статуси)
-│   ├── pages/
-│   │   ├── orgrep/          # OrgRepDashboard, MyInitiativesPage, InitiativeDetailPage
-│   │   ├── admin/           # AdminDashboard, InitiativeModerationPage, PetitionModerationPage
-│   │   ├── LoginPage.tsx
-│   │   ├── RegisterPage.tsx # реєстрація з вибором ролі
-│   │   └── NotFoundPage.tsx
-│   ├── types/               # TypeScript-типи, дзеркало DTO бекенду
-│   ├── App.tsx              # Маршрути (окремі дерева для admin / orgrep)
-│   ├── main.tsx             # Точка входу
-│   └── index.css            # Tailwind + базові компонентні класи
-├── .env.example
-├── index.html
-├── tailwind.config.js
-├── tsconfig*.json
-└── vite.config.ts
+frontend/src/
+├── api/                 # client, auth, initiatives, petitions, donations, ai
+├── components/
+│   ├── auth/            # GoogleSignInButton
+│   ├── donor/           # DonateModal (платіжна заглушка)
+│   ├── initiatives/     # InitiativeFormModal, ShareMenu
+│   ├── petitions/       # CreatePetitionModal
+│   ├── layout/          # AppLayout, Sidebar (per-role), Header
+│   ├── ui/              # Modal, Alert, ProgressBar, StatCard, Badge, Icons тощо
+│   └── ProtectedRoute.tsx
+├── contexts/            # AuthContext (isAdmin / isOrgRep / isDonor, loginWithGoogle)
+├── lib/                 # format.ts
+├── pages/
+│   ├── donor/           # DonorDashboard, BrowseInitiatives, DonationHistory, DonorPetitions, AiAssistant
+│   ├── orgrep/          # OrgRepDashboard, MyInitiatives, InitiativeDetail
+│   ├── admin/           # AdminDashboard, InitiativeModeration, PetitionModeration, UserManagement
+│   ├── LoginPage.tsx    # email/пароль + Google
+│   ├── RegisterPage.tsx # вибір ролі: Донор / Організація
+│   └── NotFoundPage.tsx
+├── types/               # дзеркало DTO бекенду
+└── App.tsx              # окремі дерева маршрутів для кожної ролі
 ```
 
 ## Відповідність API
 
-Типи в `src/types/index.ts` віддзеркалюють DTO з
-`backend/Donatly.Application/DTOs`. Ендпоінти, що використовуються:
-
 - `POST /api/users/login`
-- `POST /api/users/register/org-representative` (реєстрація представника організації)
-- `POST /api/users/register/admin` (реєстрація адміністратора)
+- `POST /api/users/register/donor`, `POST /api/users/register/org-representative`
+- `POST /api/users/google` — вхід через Google (перевірка ID-токена на бекенді)
+- `GET /api/users`, `PUT /api/users/{id}/active` — керування користувачами (адмін)
 - `GET/POST /api/initiatives`, `GET/PUT/DELETE /api/initiatives/{id}`, `GET /api/initiatives/active`
-- `GET/POST /api/petitions`, `GET/PUT/DELETE /api/petitions/{id}`
+- `POST /api/donations`, `GET /api/donations/donor/{donorId}` — донат + історія
+- `GET/POST /api/petitions`, `GET/PUT/DELETE /api/petitions/{id}`, `POST /api/petitions/{id}/vote`
+- `POST /api/ai/recommend` — AI-рекомендації донору
 
-> Ендпоінти `POST /api/donations` та `POST /api/petitions/{id}/vote` належать
-> донорському (мобільному) функціоналу і тут **не використовуються**.
+### Зміни в backend для цього етапу
 
-> **Зміни в backend для цього завдання:** додано `POST /api/users/register/admin`
-> (`RegisterAdminDto`, `UserService.RegisterAdminAsync`), а до `UpdateInitiativeDto`
-> додано поле `IsGovernmentSupported` для маркування держпідтримки адміністратором (MF-6).
+- Прибрано self-реєстрацію адміна (`/register/admin`); адмін **сідиться** у `DbSeeder`
+  (`admin@donatly.com` / `Admin123!`).
+- Додано `POST /api/users/google` (перевірка токена через `Google.Apis.Auth`).
+- Додано керування користувачами: `GET /api/users`, `PUT /api/users/{id}/active`
+  (+ перевірка `IsActive` під час логіну).
+- Додано історію донатів: `GET /api/donations/donor/{donorId}`.
+- Додано AI-сервіс `POST /api/ai/recommend` (Gemini + евристичний фолбек).
+- Конфіг: `Google:ClientId`, `AI:Gemini:ApiKey`, `AI:Gemini:Model` в `appsettings`.

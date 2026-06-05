@@ -4,6 +4,7 @@
         Guid Id,
         string Email,
         string DisplayName,
-        string UserType
+        string UserType,
+        bool IsActive = true
     );
 }

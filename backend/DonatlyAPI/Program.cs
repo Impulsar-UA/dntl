@@ -1,6 +1,7 @@
 using Donatly.Application.Interfaces;
 using Donatly.Application.Services;
 using Donatly.Infrastructure;
+using DonatlyAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,9 @@ builder.Services.AddScoped<IInitiativeService, InitiativeService>();
 builder.Services.AddScoped<IDonationService, DonationService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPetitionService, PetitionService>();
+
+// AI donor assistant (Google Gemini + heuristic fallback).
+builder.Services.AddHttpClient<IAiAssistantService, GeminiAiAssistantService>();
 
 builder.Services.AddControllers();
 

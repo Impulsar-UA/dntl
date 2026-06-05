@@ -24,6 +24,14 @@ public static class DbSeeder
         // (regardless of the hashing algorithm used by PasswordHasher).
         var testPasswordHash = PasswordHasher.HashPassword("password");
 
+        // Pre-created administrator account (no self-registration for admins).
+        // Credentials: admin@donatly.com / Admin123!
+        var admin = new Admin(
+            email: "admin@donatly.com",
+            passwordHash: PasswordHasher.HashPassword("Admin123!"),
+            displayName: "Адміністратор Donatly"
+        );
+
         // Create test organization representative
         var orgRep = new OrganizationRep(
             email: "org@donatly.com",
@@ -40,7 +48,7 @@ public static class DbSeeder
             displayName: "Іван Добрий"
         );
 
-        context.Users.AddRange(orgRep, donor);
+        context.Users.AddRange(admin, orgRep, donor);
         await context.SaveChangesAsync();
 
         // Create test initiatives (fundraisers)

@@ -1,0 +1,3 @@
+
+# Local dev secrets (Google Client ID, Gemini key)
+backend/DonatlyAPI/appsettings.Development.json

@@ -2,20 +2,15 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 
 /**
- * Guards the management area. Only authenticated staff accounts
- * (Admin / OrganizationRep) may access the web panel.
+ * Guards the authenticated area. All roles (Admin / OrganizationRep / Donor)
+ * may access the web app; each sees its own role-specific routes.
  */
 export function ProtectedRoute() {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
   const location = useLocation();
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />;
-  }
-
-  // Donor accounts are mobile-only; deny access to the web panel.
-  if (user?.userType === 'Donor') {
-    return <Navigate to="/login" replace />;
   }
 
   return <Outlet />;

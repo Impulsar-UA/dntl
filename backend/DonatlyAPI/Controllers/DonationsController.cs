@@ -32,5 +32,13 @@ namespace DonatlyAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        /// <summary>Donation history for a donor (MF-21).</summary>
+        [HttpGet("donor/{donorId:guid}")]
+        public async Task<ActionResult<IEnumerable<DonationDto>>> GetByDonor(Guid donorId)
+        {
+            var donations = await _donationService.GetDonationsByDonorAsync(donorId);
+            return Ok(donations);
+        }
     }
 }

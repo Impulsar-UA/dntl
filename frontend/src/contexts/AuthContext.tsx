@@ -9,7 +9,7 @@ import {
 } from 'react';
 import type {
   LoginRequest,
-  RegisterAdminRequest,
+  RegisterDonorRequest,
   RegisterOrgRepRequest,
   User,
 } from '@/types';
@@ -22,9 +22,11 @@ interface AuthContextValue {
   isAuthenticated: boolean;
   isAdmin: boolean;
   isOrgRep: boolean;
+  isDonor: boolean;
   login: (payload: LoginRequest) => Promise<User>;
+  registerDonor: (payload: RegisterDonorRequest) => Promise<User>;
   registerOrgRep: (payload: RegisterOrgRepRequest) => Promise<User>;
-  registerAdmin: (payload: RegisterAdminRequest) => Promise<User>;
+  loginWithGoogle: (idToken: string) => Promise<User>;
   logout: () => void;
 }
 
@@ -56,16 +58,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return loggedIn;
   }, []);
 
+  const registerDonor = useCallback(async (payload: RegisterDonorRequest) => {
+    const created = await authApi.registerDonor(payload);
+    setUser(created);
+    return created;
+  }, []);
+
   const registerOrgRep = useCallback(async (payload: RegisterOrgRepRequest) => {
     const created = await authApi.registerOrgRep(payload);
     setUser(created);
     return created;
   }, []);
 
-  const registerAdmin = useCallback(async (payload: RegisterAdminRequest) => {
-    const created = await authApi.registerAdmin(payload);
-    setUser(created);
-    return created;
+  const loginWithGoogle = useCallback(async (idToken: string) => {
+    const loggedIn = await authApi.loginWithGoogle(idToken);
+    setUser(loggedIn);
+    return loggedIn;
   }, []);
 
   const logout = useCallback(() => setUser(null), []);
@@ -76,12 +84,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAuthenticated: user !== null,
       isAdmin: user?.userType === 'Admin',
       isOrgRep: user?.userType === 'OrganizationRep',
+      isDonor: user?.userType === 'Donor',
       login,
+      registerDonor,
       registerOrgRep,
-      registerAdmin,
+      loginWithGoogle,
       logout,
     }),
-    [user, login, registerOrgRep, registerAdmin, logout]
+    [user, login, registerDonor, registerOrgRep, loginWithGoogle, logout]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

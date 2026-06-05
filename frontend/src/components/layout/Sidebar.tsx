@@ -3,9 +3,12 @@ import { useAuth } from '@/contexts/AuthContext';
 import {
   DashboardIcon,
   HeartIcon,
+  HistoryIcon,
   InitiativeIcon,
   PetitionIcon,
   ShieldIcon,
+  SparklesIcon,
+  UsersIcon,
 } from '@/components/ui/Icons';
 import type { ComponentType, SVGProps } from 'react';
 
@@ -20,6 +23,7 @@ const adminNav: NavItem[] = [
   { to: '/', label: 'Огляд', icon: DashboardIcon, end: true },
   { to: '/moderation', label: 'Модерація зборів', icon: ShieldIcon, end: false },
   { to: '/petitions', label: 'Модерація петицій', icon: PetitionIcon, end: false },
+  { to: '/users', label: 'Користувачі', icon: UsersIcon, end: false },
 ];
 
 const orgRepNav: NavItem[] = [
@@ -27,9 +31,27 @@ const orgRepNav: NavItem[] = [
   { to: '/initiatives', label: 'Мої збори', icon: InitiativeIcon, end: false },
 ];
 
+const donorNav: NavItem[] = [
+  { to: '/', label: 'Огляд', icon: DashboardIcon, end: true },
+  { to: '/initiatives', label: 'Збори', icon: HeartIcon, end: false },
+  { to: '/assistant', label: 'AI-помічник', icon: SparklesIcon, end: false },
+  { to: '/petitions', label: 'Петиції', icon: PetitionIcon, end: false },
+  { to: '/history', label: 'Історія донатів', icon: HistoryIcon, end: false },
+];
+
 export function Sidebar() {
-  const { isAdmin } = useAuth();
-  const navItems = isAdmin ? adminNav : orgRepNav;
+  const { isAdmin, isDonor } = useAuth();
+  const navItems = isAdmin ? adminNav : isDonor ? donorNav : orgRepNav;
+  const roleLabel = isAdmin
+    ? 'Адміністратор'
+    : isDonor
+      ? 'Благодійник'
+      : 'Представник організації';
+  const footer = isAdmin
+    ? 'Модерація, аналітика та керування платформою.'
+    : isDonor
+      ? 'Підтримуйте збори та петиції, яким довіряєте.'
+      : 'Створення та ведення власних благодійних зборів.';
 
   return (
     <aside className="hidden w-64 shrink-0 flex-col border-r border-slate-200 bg-white lg:flex">
@@ -39,9 +61,7 @@ export function Sidebar() {
         </div>
         <div>
           <p className="text-sm font-extrabold leading-tight text-slate-900">Donatly</p>
-          <p className="text-xs text-slate-400">
-            {isAdmin ? 'Адміністратор' : 'Представник організації'}
-          </p>
+          <p className="text-xs text-slate-400">{roleLabel}</p>
         </div>
       </div>
 
@@ -66,11 +86,7 @@ export function Sidebar() {
       </nav>
 
       <div className="border-t border-slate-200 p-4">
-        <p className="text-xs leading-relaxed text-slate-400">
-          {isAdmin
-            ? 'Модерація, аналітика та керування платформою.'
-            : 'Створення та ведення власних благодійних зборів.'}
-        </p>
+        <p className="text-xs leading-relaxed text-slate-400">{footer}</p>
       </div>
     </aside>
   );

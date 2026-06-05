@@ -1,0 +1,16 @@
+C:\Users\denys\Desktop\Новая папка\donatly_web\backend\Donatly.Application\bin\Debug\net10.0\Donatly.Application.deps.json
+C:\Users\denys\Desktop\Новая папка\donatly_web\backend\Donatly.Application\bin\Debug\net10.0\Donatly.Application.dll
+C:\Users\denys\Desktop\Новая папка\donatly_web\backend\Donatly.Application\bin\Debug\net10.0\Donatly.Application.pdb
+C:\Users\denys\Desktop\Новая папка\donatly_web\backend\Donatly.Application\bin\Debug\net10.0\Donalty.Core.dll
+C:\Users\denys\Desktop\Новая папка\donatly_web\backend\Donatly.Application\bin\Debug\net10.0\Donalty.Core.pdb
+C:\Users\denys\Desktop\Новая папка\donatly_web\backend\Donatly.Application\obj\Debug\net10.0\Donatly.Application.csproj.AssemblyReference.cache
+C:\Users\denys\Desktop\Новая папка\donatly_web\backend\Donatly.Application\obj\Debug\net10.0\Donatly.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\denys\Desktop\Новая папка\donatly_web\backend\Donatly.Application\obj\Debug\net10.0\Donatly.Application.AssemblyInfoInputs.cache
+C:\Users\denys\Desktop\Новая папка\donatly_web\backend\Donatly.Application\obj\Debug\net10.0\Donatly.Application.AssemblyInfo.cs
+C:\Users\denys\Desktop\Новая папка\donatly_web\backend\Donatly.Application\obj\Debug\net10.0\Donatly.Application.csproj.CoreCompileInputs.cache
+C:\Users\denys\Desktop\Новая папка\donatly_web\backend\Donatly.Application\obj\Debug\net10.0\Donatly.Application.sourcelink.json
+C:\Users\denys\Desktop\Новая папка\donatly_web\backend\Donatly.Application\obj\Debug\net10.0\Donatly..3FD2C3C4.Up2Date
+C:\Users\denys\Desktop\Новая папка\donatly_web\backend\Donatly.Application\obj\Debug\net10.0\Donatly.Application.dll
+C:\Users\denys\Desktop\Новая папка\donatly_web\backend\Donatly.Application\obj\Debug\net10.0\refint\Donatly.Application.dll
+C:\Users\denys\Desktop\Новая папка\donatly_web\backend\Donatly.Application\obj\Debug\net10.0\Donatly.Application.pdb
+C:\Users\denys\Desktop\Новая папка\donatly_web\backend\Donatly.Application\obj\Debug\net10.0\ref\Donatly.Application.dll

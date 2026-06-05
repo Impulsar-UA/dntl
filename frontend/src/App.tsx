@@ -13,13 +13,20 @@ import InitiativeDetailPage from '@/pages/orgrep/InitiativeDetailPage';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import InitiativeModerationPage from '@/pages/admin/InitiativeModerationPage';
 import PetitionModerationPage from '@/pages/admin/PetitionModerationPage';
+import UserManagementPage from '@/pages/admin/UserManagementPage';
+// Donor panel
+import DonorDashboard from '@/pages/donor/DonorDashboard';
+import BrowseInitiativesPage from '@/pages/donor/BrowseInitiativesPage';
+import DonationHistoryPage from '@/pages/donor/DonationHistoryPage';
+import DonorPetitionsPage from '@/pages/donor/DonorPetitionsPage';
+import AiAssistantPage from '@/pages/donor/AiAssistantPage';
 
 export default function App() {
-  const { isAuthenticated, isAdmin } = useAuth();
+  const { isAuthenticated, isAdmin, isDonor } = useAuth();
 
   return (
     <Routes>
-      {/* Public auth routes — redirect to dashboard if already signed in. */}
+      {/* Public auth routes — redirect home if already signed in. */}
       <Route
         path="/login"
         element={isAuthenticated ? <Navigate to="/" replace /> : <LoginPage />}
@@ -29,7 +36,7 @@ export default function App() {
         element={isAuthenticated ? <Navigate to="/" replace /> : <RegisterPage />}
       />
 
-      {/* Protected management area — distinct route trees per role. */}
+      {/* Protected area — distinct route trees per role. */}
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           {isAdmin ? (
@@ -37,6 +44,15 @@ export default function App() {
               <Route path="/" element={<AdminDashboard />} />
               <Route path="/moderation" element={<InitiativeModerationPage />} />
               <Route path="/petitions" element={<PetitionModerationPage />} />
+              <Route path="/users" element={<UserManagementPage />} />
+            </>
+          ) : isDonor ? (
+            <>
+              <Route path="/" element={<DonorDashboard />} />
+              <Route path="/initiatives" element={<BrowseInitiativesPage />} />
+              <Route path="/assistant" element={<AiAssistantPage />} />
+              <Route path="/petitions" element={<DonorPetitionsPage />} />
+              <Route path="/history" element={<DonationHistoryPage />} />
             </>
           ) : (
             <>
