@@ -59,6 +59,25 @@ public class UserService : IUserService
         return rep.ToDto();
     }
 
+    public async Task<UserDto> RegisterAdminAsync(RegisterAdminDto dto)
+    {
+        var normalizedEmail = dto.Email.ToLowerInvariant();
+
+        var emailExists = await _context.Users.AnyAsync(u => u.Email == normalizedEmail);
+        if (emailExists)
+        {
+            throw new InvalidOperationException("A user with this email already exists");
+        }
+
+        var passwordHash = PasswordHasher.HashPassword(dto.Password);
+        var admin = new Admin(normalizedEmail, passwordHash, dto.DisplayName);
+
+        _context.Admins.Add(admin);
+        await _context.SaveChangesAsync();
+
+        return admin.ToDto();
+    }
+
     public async Task<UserDto?> LoginAsync(LoginDto dto)
     {
         var normalizedEmail = dto.Email.ToLowerInvariant();

@@ -5,5 +5,6 @@ public record UpdateInitiativeDto(
     string Description,
     decimal TargetAmount,
     DateTime Deadline,
-    string Status
+    string Status,
+    bool IsGovernmentSupported = false
 );

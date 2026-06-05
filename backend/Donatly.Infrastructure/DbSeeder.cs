@@ -1,5 +1,6 @@
 ﻿using Donalty.Core.Domain.Entities;
 using Donalty.Core.Domain.Enums;
+using Donatly.Application.Services;
 using Donatly.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,10 +18,16 @@ public static class DbSeeder
         {
             return;
         }
+
+        // Test accounts share the password "password".
+        // Hash it with the real hasher so seeded logins always match
+        // (regardless of the hashing algorithm used by PasswordHasher).
+        var testPasswordHash = PasswordHasher.HashPassword("password");
+
         // Create test organization representative
         var orgRep = new OrganizationRep(
             email: "org@donatly.com",
-            passwordHash: "uGo68GzU2gYpYgqf6yvYmQ==", // hash of a simple string (e.g. "password")
+            passwordHash: testPasswordHash,
             displayName: "Благодійний фонд 'Імпульс'",
             orgRegistryCode: "12345678",
             contactPhone: "+380501112233"
@@ -29,7 +36,7 @@ public static class DbSeeder
         // Create test donor
         var donor = new Donor(
             email: "donor@donatly.com",
-            passwordHash: "uGo68GzU2gYpYgqf6yvYmQ==",
+            passwordHash: testPasswordHash,
             displayName: "Іван Добрий"
         );
 

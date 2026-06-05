@@ -43,6 +43,20 @@ public class UsersController : ControllerBase
         }
     }
 
+    [HttpPost("register/admin")]
+    public async Task<ActionResult<UserDto>> RegisterAdmin([FromBody] RegisterAdminDto dto)
+    {
+        try
+        {
+            var result = await _userService.RegisterAdminAsync(dto);
+            return Ok(result);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
     [HttpPost("login")]
     public async Task<ActionResult<UserDto>> Login([FromBody] LoginDto dto)
     {

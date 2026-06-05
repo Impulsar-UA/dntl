@@ -56,6 +56,8 @@ namespace Donalty.Core.Domain.Entities
 
         public void MarkAsGovernmentSupported() => IsGovernmentSupported = true;
 
+        public void SetGovernmentSupported(bool value) => IsGovernmentSupported = value;
+
     }
 
 

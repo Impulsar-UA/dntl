@@ -63,6 +63,8 @@ namespace Donatly.Application.Services
                 initiative.ChangeStatus(parsedStatus);
             }
 
+            initiative.SetGovernmentSupported(dto.IsGovernmentSupported);
+
             await _context.SaveChangesAsync();
             return initiative.ToDto();
         }

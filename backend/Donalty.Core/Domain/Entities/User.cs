@@ -16,8 +16,13 @@ namespace Donalty.Core.Domain.Entities
             Email = email;
             PasswordHash = passwordHash;
             DisplayName = displayName;
+            // AvatarUrl maps to a NOT NULL column; default to empty until the user
+            // uploads an avatar (avoids SQLite NOT NULL constraint on insert).
+            AvatarUrl = string.Empty;
             CreatedAt = DateTime.UtcNow;
             IsActive = true;
+
+            AvatarUrl = string.Empty;
         }
 
         public void UpdateProfile(string displayName, string avatarUrl)
